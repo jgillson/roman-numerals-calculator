@@ -1,0 +1,39 @@
+plugins {
+  id 'idea'
+  id 'java'
+}
+
+apply from: "$rootDir/gradle/dependencies.gradle"
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+mainClassName = "RomanNumeralsCalculator"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation libraries.commons_collections
+  implementation libraries.hamcrest
+  implementation libraries.junit_jupiter
+}
+
+test {
+  useJUnitPlatform {}
+  testLogging.showStandardStreams = true
+
+  beforeTest { descriptor ->
+    logger.lifecycle("Running test: " + descriptor)
+  }
+
+  onOutput { descriptor, event ->
+    logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+  }
+}
+
+run {
+  if (project.hasProperty('args')) {
+    args project.args.split('\\s')
+  }
+}
